@@ -65,8 +65,11 @@ def get_llama3_response(prompt_data):
     response_body = json.loads(response.get("body").read())
     return response_body.get("generation", "No response generated.")
 
+
+
 # Initialize Bedrock Embeddings
 bedrock_embeddings = BedrockEmbeddings(model_id="amazon.titan-embed-text-v2:0", client=bedrock)
+
 
 ## Data ingestion
 def data_ingestion():
@@ -76,10 +79,14 @@ def data_ingestion():
     docs = text_splitter.split_documents(documents)
     return docs
 
+
+
 ## Vector Embedding and vector store
 def get_vector_store(docs):
     vectorstore_faiss = FAISS.from_documents(docs, bedrock_embeddings)
     vectorstore_faiss.save_local("faiss_index")
+
+
 
 # Retrieval and Response
 def get_response_claude(vectorstore_faiss, query):
@@ -138,6 +145,8 @@ def main():
             faiss_index = FAISS.load_local("faiss_index", bedrock_embeddings, allow_dangerous_deserialization=True)
             st.write(get_response_llama3(faiss_index, user_question))
             st.success("Done")
+
+
 
 if __name__ == "__main__":
     main()
